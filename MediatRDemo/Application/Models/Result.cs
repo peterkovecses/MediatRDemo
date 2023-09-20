@@ -10,6 +10,7 @@ public class Result
 
     public static Result Failure(ErrorInfo error)
         => new() { Error = error };
+
 }
 
 public class Result<TData> : Result

@@ -1,5 +1,4 @@
-﻿using Azure;
-using MediatR;
+﻿using MediatR;
 using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Extensions;
 using MediatRDemo.Application.Interfaces;

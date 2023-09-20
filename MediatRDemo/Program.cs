@@ -1,7 +1,9 @@
+using FluentValidation;
 using MediatR;
 using MediatRDemo.Application.Interfaces;
 using MediatRDemo.Application.PipelineBehaviors;
 using MediatRDemo.Infrastructure.Persistence;
+using MediatRDemo.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -15,9 +17,13 @@ builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("MovieStore")));
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddScoped(
     typeof(IPipelineBehavior<,>),
     typeof(LoggingBehavior<,>));
+builder.Services.AddScoped(
+    typeof(IPipelineBehavior<,>),
+    typeof(ValidationBehavior<,>));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -34,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
