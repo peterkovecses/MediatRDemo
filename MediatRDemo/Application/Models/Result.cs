@@ -4,11 +4,11 @@ public class Result
 {
     protected Result() { }
 
-    public string? Error { get; init; }
+    public ErrorInfo? Error { get; init; }
     public bool IsSuccess => Error is null;
     public bool IsFailure => !IsSuccess;
 
-    public static Result Failure(string error)
+    public static Result Failure(ErrorInfo error)
         => new() { Error = error };
 }
 
@@ -21,9 +21,9 @@ public class Result<TData> : Result
     public static Result<TData> CreateSuccess(TData data)
         => new() { Data = data };
 
-    public static Result<TData> CreateFailure(string error)
+    public static Result<TData> CreateFailure(ErrorInfo error)
         => new() { Error = error };
 
-    public static Result<TData> CreateNotFound()
-        => new() { Error = "NotFound" };    
+    public static Result<TData> CreateNotFound(object id)
+        => new() { Error = new ErrorInfo("NotFound", "Element with id {id} not found.", id) };    
 }

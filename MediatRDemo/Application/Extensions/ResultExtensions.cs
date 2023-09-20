@@ -15,7 +15,7 @@ public static class ResultExtensions
             return new OkObjectResult(result.Data);
         }
 
-        return result.Error switch
+        return result.Error!.Code switch
         {
             "NotFound" => new NotFoundResult(),
             _ => new BadRequestObjectResult(result.Error)

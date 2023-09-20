@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure;
+using MediatR;
 using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Extensions;
 using MediatRDemo.Application.Interfaces;
@@ -22,7 +23,7 @@ public class GetMovieByIdHandler : IRequestHandler<GetMovieByIdQuery, Result<Mov
         
         if (movie is null)
         {
-            return Result<MovieDto>.CreateNotFound();
+            return Result<MovieDto>.CreateNotFound(request.MovieId);
         }
 
         return new MovieDto
