@@ -40,24 +40,13 @@ public class ValidationBehavior<TRequest, TResponse>
     {
         var responseType = typeof(TResponse);
 
-        if (responseType.IsGenericType &&
-            responseType.GetGenericTypeDefinition() == typeof(Result<>))
+        if (responseType.IsGenericType)
         {
             var resultType = responseType.GetGenericArguments()[0];
-            var failureMethod =
-                typeof(Result<>).MakeGenericType(resultType).GetMethod("CreateFailure");
-
-            if (failureMethod != null)
-            {
-                return (TResponse)failureMethod.Invoke(null, new object[] { errorInfo });
-            }
-        }
-        else if (responseType == typeof(Result))
-        {
-            return (TResponse)(object)Result.Failure(errorInfo);
+            var failureMethod = typeof(Result<>).MakeGenericType(resultType).GetMethod("CreateFailure");
+            return (TResponse)failureMethod.Invoke(null, new object[] { errorInfo });
         }
 
-        throw new InvalidOperationException(
-            "The TResponse type must be Result or Result<TData>.");
+        return (TResponse)(object)Result.Failure(errorInfo);
     }
 }
