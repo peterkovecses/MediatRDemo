@@ -24,10 +24,13 @@ public class ValidationBehavior<TRequest, TResponse>
         {
             var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
-            var errormessage = string.Join(", ", validationResult.Errors.Select(error => error.ErrorMessage));
-            var errorInfo = new ErrorInfo("ValidationError", errormessage);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(error => error.ErrorMessage);
+                var errorInfo = new ErrorInfo("ValidationError", errors);
 
-            return CreateFailureResponse(errorInfo);
+                return CreateFailureResponse(errorInfo);
+            }
         }
 
         return await next();

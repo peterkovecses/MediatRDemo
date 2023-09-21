@@ -1,6 +1,4 @@
 ﻿using MediatRDemo.Application.Models;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
 
@@ -26,13 +24,13 @@ public class ErrorHandlingMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "An exception occured");
-            await HandleExceptionAsync(context, ex);
+            await SetResponse(context);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static async Task SetResponse(HttpContext context)
     {
-        var result = Result.Failure(new ErrorInfo("ServerError", "An error occurred while processing the request."));
+        var result = Result.Failure(new ErrorInfo("ServerError", new[] { "An error occurred while processing the request." }));
         var jsonContent = JsonSerializer.Serialize(result);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

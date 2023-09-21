@@ -26,5 +26,5 @@ public class Result<TData> : Result
         => new() { Error = error };
 
     public static Result<TData> CreateNotFound(object id)
-        => new() { Error = new ErrorInfo("NotFound", "Element with id {id} not found.", id) };    
+        => new() { Error = new ErrorInfo("NotFound", new[] { "Element with id {id} not found." }, id) };    
 }
