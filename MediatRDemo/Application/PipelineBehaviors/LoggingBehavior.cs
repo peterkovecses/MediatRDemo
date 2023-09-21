@@ -29,10 +29,12 @@ public class LoggingBehavior<TRequest, TResponse>
         {
             var args = new List<object> { typeof(TRequest).Name };
             args.AddRange(result.Error!.Args);            
-            args.Add(DateTime.UtcNow);                
+            args.Add(DateTime.UtcNow);
+            
+            var errorMessage = string.Join(", ", result.Error!.Message);
 
             _logger.LogError(
-                $"Request failure {{RequestName}}, {result.Error!.Message}, {{DateTimeUtc}}", args.ToArray());
+                $"Request failure {{RequestName}}, {errorMessage}, {{DateTimeUtc}}", args.ToArray());
         }
 
         _logger.LogInformation(

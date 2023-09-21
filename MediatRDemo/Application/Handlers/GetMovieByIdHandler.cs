@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using MediatRDemo.Application.Dtos;
-using MediatRDemo.Application.Extensions;
 using MediatRDemo.Application.Interfaces;
 using MediatRDemo.Application.Models;
 using MediatRDemo.Application.Queries;
+using MediatRDemo.Extensions;
 
 namespace MediatRDemo.Application.Handlers;
 
@@ -22,7 +22,7 @@ public class GetMovieByIdHandler : IRequestHandler<GetMovieByIdQuery, Result<Mov
         
         if (movie is null)
         {
-            return Result<MovieDto>.CreateNotFound(request.MovieId);
+            return Result<MovieDto>.NotFound(request.MovieId);
         }
 
         return new MovieDto

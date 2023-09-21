@@ -43,7 +43,7 @@ public class ValidationBehavior<TRequest, TResponse>
         if (responseType.IsGenericType)
         {
             var resultType = responseType.GetGenericArguments()[0];
-            var failureMethod = typeof(Result<>).MakeGenericType(resultType).GetMethod("CreateFailure");
+            var failureMethod = typeof(Result<>).MakeGenericType(resultType).GetMethod("Failure");
             return (TResponse)failureMethod.Invoke(null, new object[] { errorInfo });
         }
 

@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using MediatRDemo.Application.Commands;
 using MediatRDemo.Application.Dtos;
-using MediatRDemo.Application.Extensions;
-using MediatRDemo.Application.Models;
 using MediatRDemo.Application.Queries;
+using MediatRDemo.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediatRDemo.Controllers;
@@ -37,5 +36,13 @@ public class MoviesController : ControllerBase
         }
 
         return CreatedAtAction(nameof(GetMovie), new { id = result.Data!.Id }, result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteMovie(int id)
+    {
+        var result = await _mediator.Send(new DeleteMovieCommand(id));
+
+        return result.ToApiResponse();
     }
 }

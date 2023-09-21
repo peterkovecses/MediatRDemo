@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using MediatRDemo.Application.Commands;
 using MediatRDemo.Application.Dtos;
-using MediatRDemo.Application.Extensions;
 using MediatRDemo.Application.Interfaces;
 using MediatRDemo.Application.Models;
 using MediatRDemo.Domain.Entities;
+using MediatRDemo.Extensions;
 
 namespace MediatRDemo.Application.Handlers;
 
