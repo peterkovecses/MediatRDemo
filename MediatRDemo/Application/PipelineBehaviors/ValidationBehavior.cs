@@ -6,7 +6,7 @@ namespace MediatRDemo.Application.PipelineBehaviors;
 
 public class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IRequest<TResponse>        
 {
     private readonly IValidator<TRequest>? _validator;
 
@@ -42,11 +42,12 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (responseType.IsGenericType)
         {
-            var resultType = responseType.GetGenericArguments()[0];
-            var failureMethod = typeof(Result<>).MakeGenericType(resultType).GetMethod("Failure");
-            return (TResponse)failureMethod.Invoke(null, new object[] { errorInfo });
+            var failureConstructor = responseType.GetConstructor(new[] { typeof(ErrorInfo) });
+            var resultInstance = failureConstructor.Invoke(new object[] { errorInfo });
+            
+            return (TResponse)resultInstance;
         }
 
-        return (TResponse)(object)Result.Failure(errorInfo);
+        return (TResponse)(object)errorInfo;
     }
 }

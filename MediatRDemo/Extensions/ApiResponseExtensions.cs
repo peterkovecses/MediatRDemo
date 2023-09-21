@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MediatRDemo.Extensions;
 
-public static class ResultExtensions
+public static class ApiResponseExtensions
 {
-    public static Result<TData> ToResult<TData>(this TData data)
-        => Result<TData>.Success(data);
-
     public static IActionResult ToApiResponse(this Result result)
     {
         if (result.IsSuccess)
