@@ -19,11 +19,12 @@ public static class ApiResponseExtensions
         };
     }
 
-    public static IActionResult ToApiResponse<TData>(this Result<TData> result)
+    public static IActionResult ToApiResponse<TData>(this Result<TData> result, 
+        Func<Result<TData>, ObjectResult>? objectResultGenerator = default)
     {
         if (result.IsSuccess)
         {
-            return new OkObjectResult(result);
+            return objectResultGenerator?.Invoke(result) ?? new OkObjectResult(result);
         }
 
         return result.Error!.Code switch

@@ -30,12 +30,11 @@ public class MoviesController : ControllerBase
     {
         var result = await _mediator.Send(new CreateMovieCommand(movie));
 
-        if (result.IsFailure)
-        {
-            return result.ToApiResponse();
-        }
-
-        return CreatedAtAction(nameof(GetMovie), new { id = result.Data!.Id }, result);
+        return result
+            .ToApiResponse(result => CreatedAtAction(
+                nameof(GetMovie), 
+                new { id = result.Data!.Id }, 
+                result));
     }
 
     [HttpDelete("{id}")]

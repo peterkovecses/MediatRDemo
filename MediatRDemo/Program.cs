@@ -1,8 +1,6 @@
 using FluentValidation;
 using MediatR;
-using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Interfaces;
-using MediatRDemo.Application.Models;
 using MediatRDemo.Application.PipelineBehaviors;
 using MediatRDemo.Infrastructure.Persistence;
 using MediatRDemo.Middlewares;
