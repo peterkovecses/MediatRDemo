@@ -14,7 +14,7 @@ public static class ApiResponseExtensions
 
         return result.Error!.Code switch
         {
-            "NotFound" => new NotFoundResult(),
+            Constants.NotFoundCode => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)
         };
     }
@@ -28,7 +28,7 @@ public static class ApiResponseExtensions
 
         return result.Error!.Code switch
         {
-            "NotFound" => new NotFoundResult(),
+            Constants.NotFoundCode => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)
         };
     }
