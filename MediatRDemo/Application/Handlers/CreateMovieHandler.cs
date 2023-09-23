@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using MediatRDemo.Application.Commands;
-using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Extensions;
 using MediatRDemo.Application.Interfaces;
 using MediatRDemo.Application.Models;
@@ -8,7 +7,7 @@ using MediatRDemo.Domain.Entities;
 
 namespace MediatRDemo.Application.Handlers;
 
-public class CreateMovieHandler : IRequestHandler<CreateMovieCommand, Result<MovieDto>>
+public class CreateMovieHandler : IRequestHandler<CreateMovieCommand, Result<int>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -17,7 +16,7 @@ public class CreateMovieHandler : IRequestHandler<CreateMovieCommand, Result<Mov
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<MovieDto>> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
+    public async Task<Result<int>> Handle(CreateMovieCommand request, CancellationToken cancellationToken)
     {
         var movie = new Movie
         {
@@ -27,8 +26,7 @@ public class CreateMovieHandler : IRequestHandler<CreateMovieCommand, Result<Mov
 
         await _unitOfWork.Movies.AddAsync(movie, cancellationToken);
         await _unitOfWork.CompleteAsync();
-        request.Movie.Id = movie.Id;
 
-        return request.Movie.ToResult();
+        return movie.Id.ToResult();
     }
 }

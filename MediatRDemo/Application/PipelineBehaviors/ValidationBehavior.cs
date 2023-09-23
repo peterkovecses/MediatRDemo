@@ -6,13 +6,13 @@ namespace MediatRDemo.Application.PipelineBehaviors;
 
 public class ValidationBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>        
+        where TRequest : IRequest<TResponse>
 {
-    private readonly IValidator<TRequest>? _validator;
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehavior(IValidator<TRequest>? validator = default)
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
-        _validator = validator;
+        _validators = validators;
     }
 
     public async Task<TResponse> Handle(
@@ -20,9 +20,11 @@ public class ValidationBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (_validator is not null)
+        var errorInfos = new List<ErrorInfo>();
+
+        foreach (var validator in _validators)
         {
-            var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (!validationResult.IsValid)
             {
@@ -33,8 +35,13 @@ public class ValidationBehavior<TRequest, TResponse>
                 var errors = validationResult.Errors.Select(error => new ApplicationError(error.ErrorMessage, args));
                 var errorInfo = new ErrorInfo("ValidationError", errors);
 
-                return CreateFailureResponse(errorInfo);
+                errorInfos.Add(errorInfo);
             }
+        }
+
+        if (errorInfos.Any())
+        {
+            return CreateFailureResponse(new ErrorInfo("ValidationErrors", errorInfos.SelectMany(errorInfo => errorInfo.Errors)));
         }
 
         return await next();
@@ -47,8 +54,8 @@ public class ValidationBehavior<TRequest, TResponse>
         if (responseType.IsGenericType)
         {
             var failureConstructor = responseType.GetConstructor(new[] { typeof(ErrorInfo) });
-            var resultInstance = failureConstructor.Invoke(new object[] { errorInfo });
-            
+            var resultInstance = failureConstructor!.Invoke(new object[] { errorInfo });
+
             return (TResponse)resultInstance;
         }
 

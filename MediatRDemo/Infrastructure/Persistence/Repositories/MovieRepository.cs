@@ -10,5 +10,5 @@ public class MovieRepository : GenericRepository<Movie, int>, IMovieRepository
     }
 
     public AppDbContext AppDbContext
-        => _context as AppDbContext;
+        => (_context as AppDbContext)!;
 }

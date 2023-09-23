@@ -33,7 +33,7 @@ public class MoviesController : ControllerBase
         return result
             .ToApiResponse(result => CreatedAtAction(
                 nameof(GetMovie), 
-                new { id = result.Data!.Id }, 
+                new { id = result.Data! }, 
                 result));
     }
 

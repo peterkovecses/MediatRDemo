@@ -7,7 +7,7 @@ using MediatRDemo.Application.Queries;
 
 namespace MediatRDemo.Application.Handlers;
 
-public class GetMovieByIdHandler : IRequestHandler<GetMovieByIdQuery, Result<MovieDto>>
+public class GetMovieByIdHandler : IRequestHandler<GetMovieByIdQuery, Result<MovieDto?>>
 {
     private readonly IMovieRepository _movies;
 
@@ -16,13 +16,13 @@ public class GetMovieByIdHandler : IRequestHandler<GetMovieByIdQuery, Result<Mov
         _movies = unitOfWork.Movies;
     }
 
-    public async Task<Result<MovieDto>> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<MovieDto?>> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
     {
         var movie = await _movies.FindByIdAsync(request.MovieId, cancellationToken);
         
         if (movie is null)
         {
-            return Result.NotFound<MovieDto>(request.MovieId);
+            return Result.NotFound<MovieDto?>(request.MovieId);
         }
 
         return new MovieDto
