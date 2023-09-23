@@ -4,8 +4,8 @@ public class Result
 {
     protected Result() { }
 
-    public ErrorInfo? Error { get; init; }
-    public bool IsSuccess => Error is null;
+    public ErrorInfo? ErrorInfo { get; init; }
+    public bool IsSuccess => ErrorInfo is null;
     public bool IsFailure => !IsSuccess;
 
     public static Result Success()
@@ -15,16 +15,26 @@ public class Result
     => new(data);
 
     public static Result Failure(ErrorInfo error)
-        => new() { Error = error };
+        => new() { ErrorInfo = error };
 
     public static Result<TData> Failure<TData>(ErrorInfo error)
         => new(error);
 
     public static Result NotFound(object id)
-        => new() { Error = new ErrorInfo(Constants.NotFoundCode, new[] { Constants.NotFoundMessage }, id) };
+        => new() { ErrorInfo = CreateNotFoundErrorInfo(id) };
 
     public static Result<TData> NotFound<TData>(object id)
-        => new(new ErrorInfo(Constants.NotFoundCode, new[] { Constants.NotFoundMessage }, id));
+        => new(CreateNotFoundErrorInfo(id));
+
+    private static ErrorInfo CreateNotFoundErrorInfo(object id)
+        => new(
+            Constants.NotFoundCode, 
+            new[] 
+            { 
+                new ApplicationError(
+                    Constants.NotFoundMessage, 
+                    new KeyValuePair<string, object>(nameof(id), id)) 
+            });
 }
 
 public class Result<TData> : Result
@@ -38,6 +48,6 @@ public class Result<TData> : Result
 
     public Result(ErrorInfo error)
     {
-        Error = error;
+        ErrorInfo = error;
     }
 }

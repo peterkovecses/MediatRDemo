@@ -12,7 +12,7 @@ public static class ApiResponseExtensions
             return new OkObjectResult(result);
         }
 
-        return result.Error!.Code switch
+        return result.ErrorInfo!.Code switch
         {
             Constants.NotFoundCode => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)
@@ -27,7 +27,7 @@ public static class ApiResponseExtensions
             return objectResultGenerator?.Invoke(result) ?? new OkObjectResult(result);
         }
 
-        return result.Error!.Code switch
+        return result.ErrorInfo!.Code switch
         {
             Constants.NotFoundCode => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)

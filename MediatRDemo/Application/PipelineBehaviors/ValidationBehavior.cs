@@ -26,7 +26,11 @@ public class ValidationBehavior<TRequest, TResponse>
 
             if (!validationResult.IsValid)
             {
-                var errors = validationResult.Errors.Select(error => error.ErrorMessage);
+                var args = validationResult
+                    .Errors
+                    .Select(error => new KeyValuePair<string, object>(error.PropertyName, error.AttemptedValue))
+                    .ToArray();
+                var errors = validationResult.Errors.Select(error => new ApplicationError(error.ErrorMessage, args));
                 var errorInfo = new ErrorInfo("ValidationError", errors);
 
                 return CreateFailureResponse(errorInfo);

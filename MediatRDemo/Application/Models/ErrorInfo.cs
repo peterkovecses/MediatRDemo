@@ -3,13 +3,11 @@
 public class ErrorInfo
 {
     public string Code { get; }
-    public IEnumerable<string> Message { get; }
-    public object[] Args { get; }
+    public IEnumerable<ApplicationError> Errors { get; }
 
-    public ErrorInfo(string code, IEnumerable<string> message, params object[] args)
+    public ErrorInfo(string code, IEnumerable<ApplicationError> errors)
     {
         Code = code;
-        Message = message;
-        Args = args;
+        Errors = errors;
     }
 }

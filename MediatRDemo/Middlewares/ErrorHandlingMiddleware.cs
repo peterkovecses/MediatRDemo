@@ -30,7 +30,7 @@ public class ErrorHandlingMiddleware
 
     private static async Task SetResponse(HttpContext context)
     {
-        var result = Result.Failure(new ErrorInfo("ServerError", new[] { "An error occurred while processing the request." }));
+        var result = Result.Failure(new ErrorInfo("ServerError", new[] { new ApplicationError("An error occurred while processing the request.") }));
         var jsonContent = JsonSerializer.Serialize(result);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

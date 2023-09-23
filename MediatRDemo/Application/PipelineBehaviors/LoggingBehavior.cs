@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Models;
+using System;
 
 namespace MediatRDemo.Application.PipelineBehaviors;
 
@@ -26,15 +27,9 @@ public class LoggingBehavior<TRequest, TResponse>
         var result = await next();
 
         if (result.IsFailure)
-        {
-            var args = new List<object> { typeof(TRequest).Name };
-            args.AddRange(result.Error!.Args);            
-            args.Add(DateTime.UtcNow);
-            
-            var errorMessage = string.Join(", ", result.Error!.Message);
-
+        {            
             _logger.LogError(
-                $"Request failure {{RequestName}}, {errorMessage}, {{DateTimeUtc}}", args.ToArray());
+                "Request failure {RequestName}, {@error}, {DateTimeUtc}", typeof(TRequest).Name, result.ErrorInfo, DateTime.UtcNow);
         }
 
         _logger.LogInformation(
