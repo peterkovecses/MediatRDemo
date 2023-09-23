@@ -20,7 +20,19 @@ public class ValidationBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var errorInfos = new List<ErrorInfo>();
+        var allErrors = await GetAllErrors(request, cancellationToken);
+
+        if (allErrors.Any())
+        {
+            return CreateFailureResponse(new ErrorInfo("ValidationErrors", allErrors));
+        }
+
+        return await next();
+    }
+
+    private async Task<List<ApplicationError>> GetAllErrors(TRequest request, CancellationToken cancellationToken)
+    {
+        var allErrors = new List<ApplicationError>();
 
         foreach (var validator in _validators)
         {
@@ -33,18 +45,11 @@ public class ValidationBehavior<TRequest, TResponse>
                     .Select(error => new KeyValuePair<string, object>(error.PropertyName, error.AttemptedValue))
                     .ToArray();
                 var errors = validationResult.Errors.Select(error => new ApplicationError(error.ErrorMessage, args));
-                var errorInfo = new ErrorInfo("ValidationError", errors);
-
-                errorInfos.Add(errorInfo);
+                allErrors.AddRange(errors);
             }
         }
 
-        if (errorInfos.Any())
-        {
-            return CreateFailureResponse(new ErrorInfo("ValidationErrors", errorInfos.SelectMany(errorInfo => errorInfo.Errors)));
-        }
-
-        return await next();
+        return allErrors;
     }
 
     private static TResponse CreateFailureResponse(ErrorInfo errorInfo)
