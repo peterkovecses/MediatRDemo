@@ -40,11 +40,13 @@ public class ValidationBehavior<TRequest, TResponse>
 
             if (!validationResult.IsValid)
             {
-                var args = validationResult
-                    .Errors
-                    .Select(error => new KeyValuePair<string, object>(error.PropertyName, error.AttemptedValue))
-                    .ToArray();
-                var errors = validationResult.Errors.Select(error => new ApplicationError(error.ErrorMessage, args));
+                var errors 
+                    = validationResult
+                        .Errors
+                        .Select(error => new ApplicationError(
+                            error.ErrorMessage, 
+                            new KeyValuePair<string, object>(error.PropertyName, error.AttemptedValue)));
+                
                 allErrors.AddRange(errors);
             }
         }
