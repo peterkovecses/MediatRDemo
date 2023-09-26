@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using MediatRDemo.Application.Dtos;
 using MediatRDemo.Application.Models;
-using System;
 
 namespace MediatRDemo.Application.PipelineBehaviors;
 
@@ -17,7 +15,10 @@ public class LoggingBehavior<TRequest, TResponse>
         _logger = logger;
     }
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "Starting request {RequestName}, {DateTimeUtc}",
@@ -29,7 +30,10 @@ public class LoggingBehavior<TRequest, TResponse>
         if (result.IsFailure)
         {            
             _logger.LogError(
-                "Request failure {RequestName}, {@error}, {DateTimeUtc}", typeof(TRequest).Name, result.ErrorInfo, DateTime.UtcNow);
+                "Request failure {RequestName}, {@error}, {DateTimeUtc}", 
+                typeof(TRequest).Name, 
+                result.ErrorInfo, 
+                DateTime.UtcNow);
         }
 
         _logger.LogInformation(
