@@ -1,4 +1,6 @@
-﻿namespace MediatRDemo.Application.Models;
+﻿using Microsoft.SqlServer.Server;
+
+namespace MediatRDemo.Application.Models;
 
 public class Result
 {
@@ -27,13 +29,13 @@ public class Result
         => new(CreateNotFoundErrorInfo(id));
 
     private static ErrorInfo CreateNotFoundErrorInfo(object id)
-        => new(
-            Constants.NotFoundCode, 
-            new[] 
-            { 
+        => new (
+            Constants.NotFoundCode,
+            new[]
+            {
                 new ApplicationError(
-                    Constants.NotFoundMessage, 
-                    new KeyValuePair<string, object>(nameof(id), id)) 
+                    string.Format(Constants.NotFoundMessage, id),
+                    new KeyValuePair<string, object>(nameof(id), id))
             });
 }
 
