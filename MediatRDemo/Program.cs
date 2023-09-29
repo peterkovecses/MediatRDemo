@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using MediatR.NotificationPublishers;
 using MediatRDemo.Application.Interfaces;
 using MediatRDemo.Application.PipelineBehaviors;
 using MediatRDemo.Infrastructure.Persistence;
@@ -16,7 +17,11 @@ builder.Host.UseSerilog((context, configuration)
 builder.Services.AddDbContext<AppDbContext>(options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("MovieStore")));
 
-builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddMediatR(config => 
+{
+    config.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    config.NotificationPublisher = new TaskWhenAllPublisher();
+});
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddScoped(
     typeof(IPipelineBehavior<,>),
