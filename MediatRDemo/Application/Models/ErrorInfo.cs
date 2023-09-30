@@ -10,4 +10,14 @@ public class ErrorInfo
         Code = code;
         Errors = errors;
     }
+
+    public static ErrorInfo NotFound(object id)
+        => new(
+            Constants.NotFoundCode,
+            new[]
+            {
+                new ApplicationError(
+                    string.Format(Constants.NotFoundMessage, id),
+                    new KeyValuePair<string, object>(nameof(id), id))
+            });
 }

@@ -23,20 +23,10 @@ public class Result
         => new(error);
 
     public static Result NotFound(object id)
-        => new() { ErrorInfo = CreateNotFoundErrorInfo(id) };
+        => new() { ErrorInfo = ErrorInfo.NotFound(id) };
 
     public static Result<TData> NotFound<TData>(object id)
-        => new(CreateNotFoundErrorInfo(id));
-
-    private static ErrorInfo CreateNotFoundErrorInfo(object id)
-        => new (
-            Constants.NotFoundCode,
-            new[]
-            {
-                new ApplicationError(
-                    string.Format(Constants.NotFoundMessage, id),
-                    new KeyValuePair<string, object>(nameof(id), id))
-            });
+        => new(ErrorInfo.NotFound(id));
 }
 
 public class Result<TData> : Result
