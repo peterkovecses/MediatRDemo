@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using MediatRDemo.Application.Models;
+using MediatRDemo.Application.Errors;
 
 namespace MediatRDemo.Application.PipelineBehaviors;
 
@@ -24,7 +24,7 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (allErrors.Any())
         {
-            return CreateFailureResponse(new ErrorInfo("ValidationErrors", allErrors));
+            return CreateFailureResponse(new ErrorInfo(ErrorCodes.ValidationError, allErrors));
         }
 
         return await next();

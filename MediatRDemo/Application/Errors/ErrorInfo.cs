@@ -1,4 +1,4 @@
-﻿namespace MediatRDemo.Application.Models;
+﻿namespace MediatRDemo.Application.Errors;
 
 public class ErrorInfo
 {
@@ -13,11 +13,11 @@ public class ErrorInfo
 
     public static ErrorInfo NotFound(object id)
         => new(
-            Constants.NotFoundCode,
+            ErrorCodes.NotFound,
             new[]
             {
                 new ApplicationError(
-                    string.Format(Constants.NotFoundMessage, id),
+                    string.Format(ErrorMessages.NotFound, id),
                     new KeyValuePair<string, object>(nameof(id), id))
             });
 }

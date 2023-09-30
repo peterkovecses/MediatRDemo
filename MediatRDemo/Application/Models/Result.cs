@@ -1,4 +1,5 @@
-﻿using Microsoft.SqlServer.Server;
+﻿using MediatRDemo.Application.Errors;
+using Microsoft.SqlServer.Server;
 
 namespace MediatRDemo.Application.Models;
 

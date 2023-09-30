@@ -1,4 +1,5 @@
-﻿using MediatRDemo.Application.Models;
+﻿using MediatRDemo.Application.Errors;
+using MediatRDemo.Application.Models;
 using System.Net;
 using System.Text.Json;
 
@@ -30,7 +31,7 @@ public class ErrorHandlingMiddleware
 
     private static async Task SetResponse(HttpContext context)
     {
-        var result = Result.Failure(new ErrorInfo("ServerError", new[] { new ApplicationError("An error occurred while processing the request.") }));
+        var result = Result.Failure(new ErrorInfo(ErrorCodes.ServerError, new[] { new ApplicationError(ErrorMessages.ServerError) }));
         var jsonContent = JsonSerializer.Serialize(result);
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

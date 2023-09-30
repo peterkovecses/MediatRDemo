@@ -1,4 +1,4 @@
-﻿namespace MediatRDemo.Application.Models;
+﻿namespace MediatRDemo.Application.Errors;
 
 public class ApplicationError
 {

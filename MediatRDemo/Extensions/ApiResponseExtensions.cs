@@ -1,4 +1,5 @@
-﻿using MediatRDemo.Application.Models;
+﻿using MediatRDemo.Application.Errors;
+using MediatRDemo.Application.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediatRDemo.Extensions;
@@ -14,7 +15,7 @@ public static class ApiResponseExtensions
 
         return result.ErrorInfo!.Code switch
         {
-            Constants.NotFoundCode => new NotFoundResult(),
+            ErrorCodes.NotFound => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)
         };
     }
@@ -29,7 +30,7 @@ public static class ApiResponseExtensions
 
         return result.ErrorInfo!.Code switch
         {
-            Constants.NotFoundCode => new NotFoundResult(),
+            ErrorCodes.NotFound => new NotFoundResult(),
             _ => new BadRequestObjectResult(result)
         };
     }
