@@ -1,5 +1,4 @@
 ﻿using MediatRDemo.Application.Errors;
-using Microsoft.SqlServer.Server;
 
 namespace MediatRDemo.Application.Models;
 
@@ -15,7 +14,7 @@ public class Result
         => new();
 
     public static Result<TData> Success<TData>(TData data)
-    => new(data);
+        => new(data);
 
     public static Result Failure(ErrorInfo error)
         => new() { ErrorInfo = error };

@@ -1,5 +1,8 @@
 ﻿using MediatRDemo.Application.Errors;
 using MediatRDemo.Application.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Net;
 using System.Text.Json;
 
@@ -25,16 +28,23 @@ public class ErrorHandlingMiddleware
         catch (Exception ex)
         {
             _logger.LogError(ex, "An exception occured");
-            await SetResponse(context);
+            var (code, message) = GetResponseData(ex);
+            await SetResponse(context, code, message);
         }
     }
 
-    private static async Task SetResponse(HttpContext context)
+    private static (HttpStatusCode, Result) GetResponseData(Exception exception)
+    => exception switch
     {
-        var result = Result.Failure(new ErrorInfo(ErrorCodes.ServerError, new[] { new ApplicationError(ErrorMessages.ServerError) }));
+        OperationCanceledException => (HttpStatusCode.Accepted, Result.Failure(new ErrorInfo(ErrorCodes.Canceled, new[] { new ApplicationError(ErrorMessages.Canceled) }))),
+        _ => (HttpStatusCode.InternalServerError, Result.Failure(new ErrorInfo(ErrorCodes.ServerError, new[] { new ApplicationError(ErrorMessages.ServerError) })))
+    };
+
+    private static async Task SetResponse(HttpContext context, HttpStatusCode code, Result result)
+    {
         var jsonContent = JsonSerializer.Serialize(result);
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        context.Response.StatusCode = (int)code;
         await context.Response.WriteAsync(jsonContent);
     }
 }

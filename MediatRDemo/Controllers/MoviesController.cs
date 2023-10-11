@@ -18,17 +18,17 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetMovie(int id)
+    public async Task<IActionResult> GetMovie(int id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetMovieByIdQuery(id));
+        var result = await _mediator.Send(new GetMovieByIdQuery(id), cancellationToken);
 
         return result.ToApiResponse();
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateMovie(MovieDto movie)
+    public async Task<IActionResult> CreateMovie(MovieDto movie, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new CreateMovieCommand(movie));
+        var result = await _mediator.Send(new CreateMovieCommand(movie), cancellationToken);
 
         return result
             .ToApiResponse(result => CreatedAtAction(
@@ -38,9 +38,9 @@ public class MoviesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteMovie(int id)
+    public async Task<IActionResult> DeleteMovie(int id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new DeleteMovieCommand(id));
+        var result = await _mediator.Send(new DeleteMovieCommand(id), cancellationToken);
 
         return result.ToApiResponse();
     }
