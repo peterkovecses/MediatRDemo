@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using MediatR;
 using MediatRDemo.Application.Models;
 
 namespace MediatRDemo.Application.PipelineBehaviors;
@@ -20,26 +21,26 @@ public class LoggingBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
+        var startTime = Stopwatch.GetTimestamp();
         _logger.LogInformation(
-            "Starting request {RequestName}, {DateTimeUtc}",
-            typeof(TRequest).Name,
-            DateTime.UtcNow);
+            "Starting request {RequestName}", 
+            typeof(TRequest).Name);
 
         var result = await next();
 
         if (result.IsFailure)
-        {            
+        {
             _logger.LogError(
-                "Request failure {RequestName}, {@error}, {DateTimeUtc}", 
-                typeof(TRequest).Name, 
-                result.ErrorInfo, 
-                DateTime.UtcNow);
+                "Request failure {RequestName}, {@Error}",
+                typeof(TRequest).Name,
+                result.ErrorInfo);
         }
 
+        var elapsedTime = Stopwatch.GetElapsedTime(startTime);
         _logger.LogInformation(
-            "Completed request {RequestName}, {DateTimeUtc}",
+            "Completed request {RequestName}, ElapsedTime: {ElapsedTime}",
             typeof(TRequest).Name,
-            DateTime.UtcNow);
+            elapsedTime);
 
         return result;
     }
